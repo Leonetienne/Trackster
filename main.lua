@@ -1,3 +1,8 @@
+--[[
+	I know, this code looks like ass,
+	if you feel personally insulted, feel free to contact /2
+]]
+
 local mainFrame = CreateFrame("frame", "TracksterMainFrame", self, BackdropTemplateMixin and "BackdropTemplate");
 Trackster = {};
 
