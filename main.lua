@@ -121,17 +121,17 @@ fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)));
 fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
 fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)));
 --fsDmg:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
---fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
-fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
-fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
-fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
-fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
+fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
+fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
+fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
+fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
+fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
 --fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
-fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
-fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
+fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
+fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
 
 mainFrame:SetWidth(220 + textMarginL);
-mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  13));
+mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  14));
 mainFrame:EnableMouse(true);
 mainFrame:SetPoint("CENTER", 480, 0, UIParent);
 mainFrame:SetMovable(true);
@@ -526,8 +526,8 @@ Trackster.SetFrameScale = function(s)
 	Trackster_frameScale = round(s, 3);
 end
 
--- This function will return the amount of gold earned when PLAYER_MONEY fires. Only call it then and only call it once per frame!
-local lastGold = GetMoney();
+-- This function will return the amount of gold earned when PLAYER_MONEY fires.
+local lastGold = 0;
 local GetGoldDifference = function()
 	local tmp = GetMoney() - lastGold;
 	lastGold = GetMoney();
@@ -539,6 +539,7 @@ local function eventHandler(self, event, ...)
 	if (event == "PLAYER_ENTERING_WORLD") then
 		UpdateAll();
 		RequestTimePlayed();
+		GetGoldDifference();
 		
 	elseif (event == "PLAYER_LOGOUT") then
 	
