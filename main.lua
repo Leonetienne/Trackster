@@ -95,7 +95,9 @@ local fsItem = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_itemOffset = 0;
 
 local fsTime = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsAbsTime = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_timeOffset = 0;
+Trackster_timestampRunBegin = 0;
 local lastConfirmedTime = 0;
 local internalTimeOffset = 0;
 
@@ -121,22 +123,23 @@ mainFrame:SetBackdrop({
 fsKills:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (0 * textMarginB)));
 fsDeaths:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (1 * textMarginB)));
 fsTime:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (2 * textMarginB)));
-fsDist:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (3 * textMarginB)));
-fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)));
-fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
-fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)));
+fsAbsTime:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (3 * textMarginB)));
+fsDist:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)));
+fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
+fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)));
+fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
 --fsDmg:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
-fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
-fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
-fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
-fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
-fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
+fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
+fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
+fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
+fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
+fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
 --fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
-fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
-fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
+fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
+fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)));
 
 mainFrame:SetWidth(220 + textMarginL);
-mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  14));
+mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  15));
 mainFrame:EnableMouse(true);
 mainFrame:SetPoint("CENTER", 480, 0, UIParent);
 mainFrame:SetMovable(true);
@@ -364,7 +367,10 @@ local function UpdateTime()
 	
 	local d, h, m, s = select(1, FormatTime(lastConfirmedTime + internalTimeOffset + Trackster_timeOffset));
 	
-	fsTime:SetText("Time played: " .. d .. ":" .. h .. ":" .. m .. ":" .. s);
+	fsTime:SetText("Time played: " .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	
+	local d, h, m, s = select(1, FormatTime(time() - Trackster_timestampRunBegin));
+	fsAbsTime:SetText("Time (real): " .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
 end
 
 
@@ -648,6 +654,10 @@ local function eventHandler(self, event, ...)
 		local addonName = select(1, ...);
 		
 		if(addonName == "Trackster") then
+			if (Trackster_timestampRunBegin == 0) then
+				Trackster_timestampRunBegin = time();
+			end
+			
 			mainFrame:SetUserPlaced(true);
 			Trackster.SetFrameScale(Trackster_frameScale);
 			Trackster.SetRenderMainFrame(Trackster_showMainframe);
@@ -668,6 +678,7 @@ Trackster.ResetAllStats = function()
 	Trackster_bossCounter = 0;
 	Trackster_chatCounter = 0;
 	Trackster_itemCounter = 0;
+	Trackster_timestampRunBegin = time();
 	
 	UpdateAll();
 end

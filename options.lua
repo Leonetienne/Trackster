@@ -103,7 +103,7 @@ local editboxMarginL = 150;
 
 local fsInfo = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 fsInfo:SetText("Thanks for using Trackster!\nPlease note, that some stats are only tracked by this AddOn, hence only count\n upwards from the point of installation. If you want some stats to be tracked\naccount wide, just change them in the .toc file in the AddOn folder!\nHave fun! -Allpi");
-fsInfo:SetPoint("CENTER", 0, -200);
+fsInfo:SetPoint("CENTER", 0, -230);
 
 local fsKills = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsDeaths = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
@@ -119,29 +119,32 @@ local fsItem = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsChat = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsJump = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsTime = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsTimeRunBegin = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsScale = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 
 fsKills:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (0 * textMarginB)))
 fsDeaths:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (1 * textMarginB)))
 fsTime:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (2 * textMarginB)))
-fsDist:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (3 * textMarginB)))
-fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)))
+fsTimeRunBegin:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (3 * textMarginB)))
+fsDist:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)))
+fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)))
 --fsDmg:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)))
-fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)))
-fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)))
-fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)))
-fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)))
-fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)))
-fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)))
-fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)))
-fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)))
-fsScale:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)))
+fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)))
+fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)))
+fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)))
+fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)))
+fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)))
+fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)))
+fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)))
+fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)))
+fsScale:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)))
 
-buttonReset:SetPoint("TOPLEFT", textMarginL - 5, -(textMarginT + ((14 + 0.2) * textMarginB)));
+buttonReset:SetPoint("TOPLEFT", textMarginL - 5, -(textMarginT + ((15 + 0.2) * textMarginB)));
 
 fsKills:SetText("Kills offset:");
 fsDeaths:SetText("Deaths offset:");
 fsTime:SetText("Time played offset:");
+fsTimeRunBegin:SetText("Started run at:");
 fsDist:SetText("Distance(m) offset:");
 fsQuests:SetText("Quests offset:");
 --fsDmg:SetText("Damage offset:");
@@ -257,6 +260,13 @@ ebTime:SetMaxLetters(maxCharacters);
 ebTime:SetAutoFocus(false);
 ebTime:SetNumeric(false);
 
+local ebTimeRunStarted = CreateFrame("EditBox", "editboxOffsetTime", optionsFrame, "InputBoxTemplate");
+ebTimeRunStarted:SetFrameStrata("DIALOG");
+ebTimeRunStarted:SetSize(ebWidth,21);
+ebTimeRunStarted:SetMaxLetters(maxCharacters);
+ebTimeRunStarted:SetAutoFocus(false);
+ebTimeRunStarted:SetNumeric(false);
+
 local ebReset = CreateFrame("EditBox", "editboxConfirmReset", optionsFrame, "InputBoxTemplate");
 ebReset:SetFrameStrata("DIALOG");
 ebReset:SetSize(ebWidth,21);
@@ -281,22 +291,23 @@ fsTimeUNIT:SetText("seconds");
 ebKills:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (0 * textMarginB)));
 ebDeaths:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (1 * textMarginB)));
 ebTime:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (2 * textMarginB)));
-ebDist:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (3 * textMarginB)));
-ebQuests:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (4 * textMarginB)));
+ebTimeRunStarted:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (3 * textMarginB)));
+ebDist:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (4 * textMarginB)));
+ebQuests:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (5 * textMarginB)));
 --ebDmg:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (4 * textMarginB)));
-ebBoss:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (5 * textMarginB)));
-ebCast:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (6 * textMarginB)));
-ebGold:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (7 * textMarginB)));
-ebCrit:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (8 * textMarginB)));
-ebLogin:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (9 * textMarginB)));
-ebItem:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (10 * textMarginB)));
-ebChat:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (11 * textMarginB)));
-ebJumps:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (12 * textMarginB)));
-ebScale:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (13 * textMarginB)));
+ebBoss:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (6 * textMarginB)));
+ebCast:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (7 * textMarginB)));
+ebGold:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (8 * textMarginB)));
+ebCrit:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (9 * textMarginB)));
+ebLogin:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (10 * textMarginB)));
+ebItem:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (11 * textMarginB)));
+ebChat:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (12 * textMarginB)));
+ebJumps:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (13 * textMarginB)));
+ebScale:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (14 * textMarginB)));
 
-ebReset:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + ((14 + 0.2) * textMarginB)));
+ebReset:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + ((15 + 0.2) * textMarginB)));
 fsTimeUNIT:SetPoint("TOPLEFT", editboxMarginL * 1.75, -(textMarginT + ((2 + 0.2) * textMarginB) - 2));
-fsResetInfo:SetPoint("TOPLEFT", editboxMarginL * 1.85, -(textMarginT + ((14 + 0.2) * textMarginB) + 5));
+fsResetInfo:SetPoint("TOPLEFT", editboxMarginL * 1.85, -(textMarginT + ((15 + 0.2) * textMarginB) + 5));
 
 local function CheckIfICanPrimeReset()
 	
@@ -351,6 +362,7 @@ local function LoadDefaultTexts(doAnways)
 		ebChat:SetText(Trackster.OffsetChat());
 		ebJumps:SetText(Trackster.OffsetJumps());
 		ebTime:SetText(Trackster.OffsetTime());
+		ebTimeRunStarted:SetText(Trackster_timestampRunBegin);
 		ebScale:SetText(Trackster_frameScale);
 		
 		areDefValsLoaded = true;
@@ -389,6 +401,7 @@ local function UpdateOffsets()
 	ebChat:ClearFocus();
 	ebJumps:ClearFocus();
 	ebTime:ClearFocus();
+	ebTimeRunStarted:ClearFocus();
 	ebScale:ClearFocus();
 	
 	Trackster.SetFrameScale(ebScale:GetNumber());
@@ -406,6 +419,7 @@ local function UpdateOffsets()
 	Trackster.OffsetChat(ebChat:GetNumber());
 	Trackster.OffsetJumps(ebJumps:GetNumber());
 	Trackster.OffsetTime(ebTime:GetNumber());
+	Trackster_timestampRunBegin = ebTimeRunStarted:GetNumber();
 	
 	
 	LoadDefaultTexts(true);
@@ -424,6 +438,7 @@ ebGold:SetScript("OnEnterPressed", UpdateOffsets);
 ebCrit:SetScript("OnEnterPressed", UpdateOffsets);
 ebLogin:SetScript("OnEnterPressed", UpdateOffsets);
 ebItem:SetScript("OnEnterPressed", UpdateOffsets);
+ebTimeRunStarted:SetScript("OnEnterPressed", UpdateOffsets);
 ebChat:SetScript("OnEnterPressed", UpdateOffsets);
 ebJumps:SetScript("OnEnterPressed", UpdateOffsets);
 ebScale:SetScript("OnEnterPressed", UpdateOffsets);
