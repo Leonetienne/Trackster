@@ -1,8 +1,8 @@
-## Interface: 80000
+## Interface: 90100
 ## Title: Trackster
 ## Author: Allpi
 ## Notes: This AddOn tracks new statistics and shows them alongside with some vanilla ones in the player-hud.
-## Version: 1.1
+## Version: 1.2
 
 #  Stats stated here are saved per character.
 ## SavedVariablesPerCharacter: Trackster_jumpCounter, Trackster_critCounter, Trackster_castCounter, Trackster_loginCounter, Trackster_bossCounter, Trackster_chatCounter, Trackster_itemCounter, Trackster_goldCounter, Trackster_distanceTravelledCounter
