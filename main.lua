@@ -94,6 +94,9 @@ Trackster_chatOffset = 0;
 local fsItem = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_itemOffset = 0;
 
+local fsHearthstones = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_HearthstonesOffset = 0;
+
 local fsTime = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsAbsTime = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_timeOffset = 0;
@@ -137,9 +140,10 @@ fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
 --fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
 fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
 fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)));
+fsHearthstones:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (15 * textMarginB)));
 
 mainFrame:SetWidth(220 + textMarginL);
-mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  15));
+mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  21));
 mainFrame:EnableMouse(true);
 mainFrame:SetPoint("CENTER", 480, 0, UIParent);
 mainFrame:SetMovable(true);
@@ -175,6 +179,7 @@ mainFrame:RegisterEvent("CHAT_MSG_YELL");
 mainFrame:RegisterEvent("CHAT_MSG_INSTANCE_CHAT");
 mainFrame:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER");
 mainFrame:RegisterEvent("TIME_PLAYED_MSG");
+mainFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
 mainFrame:RegisterEvent("CINEMATIC_START");
 mainFrame:RegisterEvent("CINEMATIC_STOP");
 
@@ -245,7 +250,7 @@ function UpdateDeaths()
 	local val = select(1, GetStatistic(60));
 	
 	if (val == "--") then
-		fsDeaths:SetText("Death count: " .. (val));
+		fsDeaths:SetText("Death count: " .. (Trackster_deathOffset));
 	else
 		fsDeaths:SetText("Death count: " .. (val + Trackster_deathOffset));
 	end
@@ -257,7 +262,7 @@ local function UpdateKills()
 	local val = select(1, GetStatistic(1197));
 	
 	if (val == "--") then
-		fsKills:SetText("Kill count: " .. (val));
+		fsKills:SetText("Kill count: " .. (Trackster_killsOffset));
 	else
 		fsKills:SetText("Kill count: " .. (val + Trackster_killsOffset));
 	end
@@ -269,11 +274,23 @@ local function UpdateQuests()
 	local val = select(1, GetStatistic(98));
 	
 	if (val == "--") then
-		fsQuests:SetText("Quest count: " .. (val));
+		fsQuests:SetText("Quest count: " .. (Trackster_questsOffset));
 	else
 		fsQuests:SetText("Quest count: " .. (val + Trackster_questsOffset));
 	end
 end
+
+local function UpdateHearthstones()
+	Trackster_HearthstonesOffset = round(Trackster_HearthstonesOffset);
+	
+	local val = select(1, GetStatistic(353));
+	
+	if (val == "--") then
+		fsHearthstones:SetText("Hearthed: " .. (Trackster_HearthstonesOffset) .. " times");
+	else
+		fsHearthstones:SetText("Hearthed: " .. (val + Trackster_HearthstonesOffset) .. " times");
+	end
+end	
 
 local function UpdateDmg()
 	--Trackster_dmgOffset = round(Trackster_dmgOffset);
@@ -482,6 +499,13 @@ Trackster.OffsetTime = function(offset)
 	UpdateTime();
 end
 
+Trackster.OffsetHearthstones = function(offset)
+	if(offset == nil) then return Trackster_HearthstonesOffset; end;
+	
+	Trackster_HearthstonesOffset = offset;
+	UpdateHearthstones();
+end
+
 local function UpdateAll()
 	UpdateDeaths();
 	UpdateKills();
@@ -499,6 +523,7 @@ local function UpdateAll()
 	UpdateChat();
 	UpdateItem();
 	UpdateTime();
+	UpdateHearthstones();
 end
 mainFrame:SetScript("OnShow", UpdateAll);
 
@@ -629,6 +654,9 @@ local function eventHandler(self, event, ...)
 	elseif (event == "TIME_PLAYED_MSG") then
 		local timePlayed = select(1, ...);
 		SyncTimePlayedWithBlizzardServer(timePlayed);
+
+	elseif (event == "LOADING_SCREEN_DISABLED") then
+		UpdateHearthstones();
 	
 		
 	elseif (event == "CHAT_MSG_SAY") then ProcessChatMsg(...);

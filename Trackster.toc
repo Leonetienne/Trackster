@@ -13,7 +13,7 @@
 
 
 #  These are the settings values.
-## SavedVariablesPerCharacter: Trackster_deathOffset, Trackster_killsOffset, Trackster_questsOffset, Trackster_dmgOffset, Trackster_jumpOffset, Trackster_IlvlOffset, Trackster_castOffset, Trackster_critOffset, Trackster_loginOffset, Trackster_bossOffset, Trackster_chatOffset, Trackster_itemOffset, Trackster_timeOffset, Trackster_goldOffset, Trackster_distanceTravelledOffset, Trackster_timestampRunBegin
+## SavedVariablesPerCharacter: Trackster_deathOffset, Trackster_killsOffset, Trackster_questsOffset, Trackster_dmgOffset, Trackster_jumpOffset, Trackster_IlvlOffset, Trackster_castOffset, Trackster_critOffset, Trackster_loginOffset, Trackster_bossOffset, Trackster_chatOffset, Trackster_itemOffset, Trackster_timeOffset, Trackster_goldOffset, Trackster_distanceTravelledOffset, Trackster_timestampRunBegin, Trackster_HearthstonesOffset
 
 #  These are internal values. Just don't touch those.
 ## SavedVariablesPerCharacter: Trackster_showMainframe, Trackster_frameScale

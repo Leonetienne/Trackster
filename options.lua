@@ -99,7 +99,9 @@ local textFont = "GameFontWhite";
 local textMarginB = 27.5;
 local textMarginT = 25;
 local textMarginL = 25;
+local textMarginLC2 = textMarginL + 300;
 local editboxMarginL = 150;
+local editboxMarginLC2 = textMarginLC2 + 125;  --> second column
 
 local fsInfo = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 fsInfo:SetText("Thanks for using Trackster!\nPlease note, that some stats are only tracked by this AddOn, hence only count\n upwards from the point of installation. If you want some stats to be tracked\naccount wide, just change them in the .toc file in the AddOn folder!\nHave fun! -Allpi");
@@ -119,6 +121,7 @@ local fsItem = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsChat = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsJump = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsTime = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsHearthstones = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsTimeRunBegin = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsScale = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 
@@ -139,6 +142,8 @@ fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)))
 fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)))
 fsScale:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)))
 
+fsHearthstones:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (0 * textMarginB)))
+
 buttonReset:SetPoint("TOPLEFT", textMarginL - 5, -(textMarginT + ((15 + 0.2) * textMarginB)));
 
 fsKills:SetText("Kills offset:");
@@ -157,6 +162,7 @@ fsBoss:SetText("Bosskills offset:");
 fsChat:SetText("Chat msg offset:");
 fsItem:SetText("Items offset:");
 fsScale:SetText("Frame scale:");
+fsHearthstones:SetText("Hearthed offset:");
 
 local maxCharacters = 12;
 local ebWidth = 110;
@@ -281,6 +287,13 @@ ebScale:SetMaxLetters(maxCharacters);
 ebScale:SetAutoFocus(false);
 ebScale:SetNumeric(false);
 
+local ebHearthstones = CreateFrame("EditBox", "editboxConfirmScale", optionsFrame, "InputBoxTemplate");
+ebHearthstones:SetFrameStrata("DIALOG");
+ebHearthstones:SetSize(ebWidth,21);
+ebHearthstones:SetMaxLetters(maxCharacters);
+ebHearthstones:SetAutoFocus(false);
+ebHearthstones:SetNumeric(false);
+
 
 local fsResetInfo = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontWhite");
 fsResetInfo:SetText("<- Enter \"" .. resetSafeword .. "\" to enable the reset function.");
@@ -304,6 +317,8 @@ ebItem:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (11 * textMarginB)));
 ebChat:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (12 * textMarginB)));
 ebJumps:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (13 * textMarginB)));
 ebScale:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (14 * textMarginB)));
+
+ebHearthstones:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (0 * textMarginB)));
 
 ebReset:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + ((15 + 0.2) * textMarginB)));
 fsTimeUNIT:SetPoint("TOPLEFT", editboxMarginL * 1.75, -(textMarginT + ((2 + 0.2) * textMarginB) - 2));
@@ -362,6 +377,7 @@ local function LoadDefaultTexts(doAnways)
 		ebChat:SetText(Trackster.OffsetChat());
 		ebJumps:SetText(Trackster.OffsetJumps());
 		ebTime:SetText(Trackster.OffsetTime());
+		ebHearthstones:SetText(Trackster.OffsetHearthstones());
 		ebTimeRunStarted:SetText(Trackster_timestampRunBegin);
 		ebScale:SetText(Trackster_frameScale);
 		
@@ -401,6 +417,7 @@ local function UpdateOffsets()
 	ebChat:ClearFocus();
 	ebJumps:ClearFocus();
 	ebTime:ClearFocus();
+	ebHearthstones:ClearFocus();
 	ebTimeRunStarted:ClearFocus();
 	ebScale:ClearFocus();
 	
@@ -419,6 +436,7 @@ local function UpdateOffsets()
 	Trackster.OffsetChat(ebChat:GetNumber());
 	Trackster.OffsetJumps(ebJumps:GetNumber());
 	Trackster.OffsetTime(ebTime:GetNumber());
+	Trackster.OffsetHearthstones(ebHearthstones:GetNumber());
 	Trackster_timestampRunBegin = ebTimeRunStarted:GetNumber();
 	
 	
@@ -441,4 +459,5 @@ ebItem:SetScript("OnEnterPressed", UpdateOffsets);
 ebTimeRunStarted:SetScript("OnEnterPressed", UpdateOffsets);
 ebChat:SetScript("OnEnterPressed", UpdateOffsets);
 ebJumps:SetScript("OnEnterPressed", UpdateOffsets);
+ebHearthstones:SetScript("OnEnterPressed", UpdateOffsets);
 ebScale:SetScript("OnEnterPressed", UpdateOffsets);
