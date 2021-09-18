@@ -52,9 +52,9 @@ buttonX:SetPushedTexture(ptex);
 
 
 local textFont = "GameFontWhite";
-local textMarginB = 20;
-local textMarginT = 25;
-local textMarginL = 25;
+local textMarginB = 20; --> margin between
+local textMarginT = 25; --> margin top
+local textMarginL = 25; --> margin left
 
 local fsDeaths = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_deathOffset = 0;
