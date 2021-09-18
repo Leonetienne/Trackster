@@ -124,6 +124,12 @@ local fsTime = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsHearthstones = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsTimeRunBegin = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 local fsScale = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__swam = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__walked = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__groundmount = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__flight = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__taxi = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
+local fsDist__ghost = optionsFrame:CreateFontString(nil, "OVERLAY", textFont);
 
 fsKills:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (0 * textMarginB)))
 fsDeaths:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (1 * textMarginB)))
@@ -143,6 +149,12 @@ fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)))
 fsScale:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)))
 
 fsHearthstones:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (0 * textMarginB)))
+fsDist__swam:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (1 * textMarginB)))
+fsDist__walked:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (2 * textMarginB)))
+fsDist__groundmount:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (3 * textMarginB)))
+fsDist__flight:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (4 * textMarginB)))
+fsDist__taxi:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (5 * textMarginB)))
+fsDist__ghost:SetPoint("TOPLEFT", textMarginLC2, -(textMarginT + (6 * textMarginB)))
 
 buttonReset:SetPoint("TOPLEFT", textMarginL - 5, -(textMarginT + ((15 + 0.2) * textMarginB)));
 
@@ -163,6 +175,12 @@ fsChat:SetText("Chat msg offset:");
 fsItem:SetText("Items offset:");
 fsScale:SetText("Frame scale:");
 fsHearthstones:SetText("Hearthed offset:");
+fsDist__swam:SetText("Dist swam offset:");
+fsDist__walked:SetText("Dist foot offset:");
+fsDist__groundmount:SetText("Dist rode offset:");
+fsDist__flight:SetText("Dist flew offset:");
+fsDist__taxi:SetText("Dist taxi offset:");
+fsDist__ghost:SetText("Dist ghost offset:");
 
 local maxCharacters = 12;
 local ebWidth = 110;
@@ -187,6 +205,48 @@ ebDist:SetSize(ebWidth,21);
 ebDist:SetMaxLetters(maxCharacters);
 ebDist:SetAutoFocus(false);
 ebDist:SetNumeric(false);
+
+local ebDist__swam = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__swam:SetFrameStrata("DIALOG");
+ebDist__swam:SetSize(ebWidth,21);
+ebDist__swam:SetMaxLetters(maxCharacters);
+ebDist__swam:SetAutoFocus(false);
+ebDist__swam:SetNumeric(false);
+
+local ebDist__walked = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__walked:SetFrameStrata("DIALOG");
+ebDist__walked:SetSize(ebWidth,21);
+ebDist__walked:SetMaxLetters(maxCharacters);
+ebDist__walked:SetAutoFocus(false);
+ebDist__walked:SetNumeric(false);
+
+local ebDist__groundmount = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__groundmount:SetFrameStrata("DIALOG");
+ebDist__groundmount:SetSize(ebWidth,21);
+ebDist__groundmount:SetMaxLetters(maxCharacters);
+ebDist__groundmount:SetAutoFocus(false);
+ebDist__groundmount:SetNumeric(false);
+
+local ebDist__flight = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__flight:SetFrameStrata("DIALOG");
+ebDist__flight:SetSize(ebWidth,21);
+ebDist__flight:SetMaxLetters(maxCharacters);
+ebDist__flight:SetAutoFocus(false);
+ebDist__flight:SetNumeric(false);
+
+local ebDist__taxi = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__taxi:SetFrameStrata("DIALOG");
+ebDist__taxi:SetSize(ebWidth,21);
+ebDist__taxi:SetMaxLetters(maxCharacters);
+ebDist__taxi:SetAutoFocus(false);
+ebDist__taxi:SetNumeric(false);
+
+local ebDist__ghost = CreateFrame("EditBox", "editboxOffsetDist", optionsFrame, "InputBoxTemplate");
+ebDist__ghost:SetFrameStrata("DIALOG");
+ebDist__ghost:SetSize(ebWidth,21);
+ebDist__ghost:SetMaxLetters(maxCharacters);
+ebDist__ghost:SetAutoFocus(false);
+ebDist__ghost:SetNumeric(false);
 
 local ebQuests = CreateFrame("EditBox", "editboxOffsetQuests", optionsFrame, "InputBoxTemplate");
 ebQuests:SetNumeric(false);
@@ -319,6 +379,12 @@ ebJumps:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (13 * textMarginB)))
 ebScale:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + (14 * textMarginB)));
 
 ebHearthstones:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (0 * textMarginB)));
+ebDist__swam:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (1 * textMarginB)));
+ebDist__walked:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (2 * textMarginB)));
+ebDist__groundmount:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (3 * textMarginB)));
+ebDist__flight:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (4 * textMarginB)));
+ebDist__taxi:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (5 * textMarginB)));
+ebDist__ghost:SetPoint("TOPLEFT", editboxMarginLC2, -(textMarginT + (6 * textMarginB)));
 
 ebReset:SetPoint("TOPLEFT", editboxMarginL, -(textMarginT + ((15 + 0.2) * textMarginB)));
 fsTimeUNIT:SetPoint("TOPLEFT", editboxMarginL * 1.75, -(textMarginT + ((2 + 0.2) * textMarginB) - 2));
@@ -380,6 +446,12 @@ local function LoadDefaultTexts(doAnways)
 		ebHearthstones:SetText(Trackster.OffsetHearthstones());
 		ebTimeRunStarted:SetText(Trackster_timestampRunBegin);
 		ebScale:SetText(Trackster_frameScale);
+		ebDist__swam:SetText(Trackster.OffsetDistance__swam());
+		ebDist__walked:SetText(Trackster.OffsetDistance__walked());
+		ebDist__groundmount:SetText(Trackster.OffsetDistance__groundmount());
+		ebDist__flight:SetText(Trackster.OffsetDistance__flight());
+		ebDist__taxi:SetText(Trackster.OffsetDistance__taxi());
+		ebDist__ghost:SetText(Trackster.OffsetDistance__ghost());
 		
 		areDefValsLoaded = true;
 	end
@@ -419,6 +491,12 @@ local function UpdateOffsets()
 	ebTime:ClearFocus();
 	ebHearthstones:ClearFocus();
 	ebTimeRunStarted:ClearFocus();
+	ebDist__swam:ClearFocus();
+	ebDist__walked:ClearFocus();
+	ebDist__groundmount:ClearFocus();
+	ebDist__flight:ClearFocus();
+	ebDist__taxi:ClearFocus();
+	ebDist__ghost:ClearFocus();
 	ebScale:ClearFocus();
 	
 	Trackster.SetFrameScale(ebScale:GetNumber());
@@ -437,6 +515,12 @@ local function UpdateOffsets()
 	Trackster.OffsetJumps(ebJumps:GetNumber());
 	Trackster.OffsetTime(ebTime:GetNumber());
 	Trackster.OffsetHearthstones(ebHearthstones:GetNumber());
+	Trackster.OffsetDistance__swam(ebDist__swam:GetNumber());
+	Trackster.OffsetDistance__walked(ebDist__walked:GetNumber());
+	Trackster.OffsetDistance__groundmount(ebDist__groundmount:GetNumber());
+	Trackster.OffsetDistance__flight(ebDist__flight:GetNumber());
+	Trackster.OffsetDistance__taxi(ebDist__taxi:GetNumber());
+	Trackster.OffsetDistance__ghost(ebDist__ghost:GetNumber());
 	Trackster_timestampRunBegin = ebTimeRunStarted:GetNumber();
 	
 	
@@ -460,4 +544,10 @@ ebTimeRunStarted:SetScript("OnEnterPressed", UpdateOffsets);
 ebChat:SetScript("OnEnterPressed", UpdateOffsets);
 ebJumps:SetScript("OnEnterPressed", UpdateOffsets);
 ebHearthstones:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__swam:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__walked:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__groundmount:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__flight:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__taxi:SetScript("OnEnterPressed", UpdateOffsets);
+ebDist__ghost:SetScript("OnEnterPressed", UpdateOffsets);
 ebScale:SetScript("OnEnterPressed", UpdateOffsets);

@@ -15,6 +15,12 @@ Trackster_chatCounter = 0;
 Trackster_itemCounter = 0;
 Trackster_goldCounter = 0;
 Trackster_distanceTravelledCounter = 0;
+Trackster_distanceTravelledCounter__swam = 0;
+Trackster_distanceTravelledCounter__walked = 0;
+Trackster_distanceTravelledCounter__groundmount = 0;
+Trackster_distanceTravelledCounter__flight = 0;
+Trackster_distanceTravelledCounter__ghost = 0;
+Trackster_distanceTravelledCounter__taxi = 0;
 
 Trackster_frameScale = 1;
 
@@ -57,10 +63,28 @@ local fsKills = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_killsOffset = 0;
 
 local fsDist = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
-Trackster_distanceTravelledOffset = -0;
+Trackster_distanceTravelledOffset = 0;
+
+local fsDist__swam = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__swam = 0;
+
+local fsDist__walked = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__walked = 0;
+
+local fsDist__groundmount = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__groundmount = 0;
+
+local fsDist__flight = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__flight = 0;
+
+local fsDist__taxi = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__taxi = 0;
+
+local fsDist__ghost = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+Trackster_distanceTravelledOffset__ghost = 0;
 
 local fsQuests = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
-Trackster_questsOffset = -0;
+Trackster_questsOffset = 0;
 
 --local fsDmg = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 --Trackster_dmgOffset = 0;
@@ -128,22 +152,28 @@ fsDeaths:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (1 * textMarginB)));
 fsTime:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (2 * textMarginB)));
 fsAbsTime:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (3 * textMarginB)));
 fsDist:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (4 * textMarginB)));
-fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
-fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)));
-fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
+fsDist__swam:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
+fsDist__walked:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (6 * textMarginB)));
+fsDist__groundmount:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (7 * textMarginB)));
+fsDist__flight:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
+fsDist__taxi:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
+fsDist__ghost:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
+fsQuests:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
+fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
+fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
 --fsDmg:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
-fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (8 * textMarginB)));
-fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (9 * textMarginB)));
-fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (10 * textMarginB)));
-fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (11 * textMarginB)));
-fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
+fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)));
+fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (15 * textMarginB)));
+fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (16 * textMarginB)));
+fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (17 * textMarginB)));
+fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (18 * textMarginB)));
 --fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
-fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
-fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)));
-fsHearthstones:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (15 * textMarginB)));
+fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (19 * textMarginB)));
+fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (20 * textMarginB)));
+fsHearthstones:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (21 * textMarginB)));
 
 mainFrame:SetWidth(220 + textMarginL);
-mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  21));
+mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  22));
 mainFrame:EnableMouse(true);
 mainFrame:SetPoint("CENTER", 480, 0, UIParent);
 mainFrame:SetMovable(true);
@@ -214,29 +244,182 @@ function Round(f)
 	return math.floor(f+0.5);
 end
 
-local timer = 0;
+local timer__all = 0;
+local timer__swam = 0;
+local timer__walked = 0;
+local timer__groundmount = 0;
+local timer__flight = 0;
+local timer__taxi = 0;
+local timer__ghost = 0;
 function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	--> Update value in background in every frame
-	Trackster_distanceTravelledCounter = Trackster_distanceTravelledCounter + (GetUnitSpeed("PLAYER") * 0.9144 * deltaTime);
-	local val = Round(Trackster_distanceTravelledCounter + Trackster_distanceTravelledOffset);
-				
-	timer = timer + deltaTime;
-	local updateDelayS = 1;
-	if (val < 5000) then
-		updateDelayS = 0.1;
-	elseif (val < 10000) then
-		updateDelayS = 1;
+	local deltaDistance = GetUnitSpeed("PLAYER") * 0.9144 * deltaTime;
+	Trackster_distanceTravelledCounter = Trackster_distanceTravelledCounter + deltaDistance;
+
+	--> Increment specialized distance counters, if the state fits (like, swimming only if IsSwimming() == true)
+	if (IsSwimming()) then
+		Trackster_distanceTravelledCounter__swam = Trackster_distanceTravelledCounter__swam + deltaDistance;
+	elseif (UnitOnTaxi("PLAYER")) then
+		Trackster_distanceTravelledCounter__taxi = Trackster_distanceTravelledCounter__taxi + deltaDistance;
+	elseif (IsFlying()) then
+		Trackster_distanceTravelledCounter__flight = Trackster_distanceTravelledCounter__flight + deltaDistance;
+	elseif (IsMounted()) then
+		Trackster_distanceTravelledCounter__groundmount = Trackster_distanceTravelledCounter__groundmount + deltaDistance;
+	elseif (UnitIsDeadOrGhost("PLAYER")) then
+		Trackster_distanceTravelledCounter__ghost = Trackster_distanceTravelledCounter__ghost + deltaDistance;
 	else
-		updateDelayS = 10;
+		Trackster_distanceTravelledCounter__walked = Trackster_distanceTravelledCounter__walked + deltaDistance;
+	end
+
+
+	local val__all = Round(Trackster_distanceTravelledCounter + Trackster_distanceTravelledOffset);
+	local val__swam = Round(Trackster_distanceTravelledCounter__swam + Trackster_distanceTravelledOffset__swam);
+	local val__walked = Round(Trackster_distanceTravelledCounter__walked + Trackster_distanceTravelledOffset__walked);
+	local val__groundmount = Round(Trackster_distanceTravelledCounter__groundmount + Trackster_distanceTravelledOffset__groundmount);
+	local val__flight = Round(Trackster_distanceTravelledCounter__flight + Trackster_distanceTravelledOffset__flight);
+	local val__taxi = Round(Trackster_distanceTravelledCounter__taxi + Trackster_distanceTravelledOffset__taxi);
+	local val__ghost = Round(Trackster_distanceTravelledCounter__ghost + Trackster_distanceTravelledOffset__ghost);
+				
+	timer__all 			= timer__all + deltaTime;
+	timer__swam 		= timer__swam + deltaTime;
+	timer__walked 		= timer__walked + deltaTime;
+	timer__groundmount 	= timer__groundmount + deltaTime;
+	timer__flight 		= timer__flight + deltaTime;
+	timer__taxi 		= timer__taxi + deltaTime;
+	timer__ghost 		= timer__ghost + deltaTime;
+
+	local updateDelayS__all = 1;
+	local updateDelayS__swam = 1;
+	local updateDelayS__walked = 1;
+	local updateDelayS__groundmount = 1;
+	local updateDelayS__flight = 1;
+	local updateDelayS__taxi = 1;
+	local updateDelayS__ghost = 1;
+	
+	if (val__all < 5000) then
+		updateDelayS__all = 0.1;
+	elseif (val__all < 10000) then
+		updateDelayS__all = 1;
+	else
+		updateDelayS__all = 10;
 	end
 	
-	if (timer >= updateDelayS or forceTextUpdate) then --> Update UI text every deltaTime seconds
-		if (val < 10000) then
-			fsDist:SetText("Distance travelled: " .. val .. "m");
+	if (val__swam < 5000) then
+		updateDelayS__swam = 0.1;
+	elseif (val__swam < 10000) then
+		updateDelayS__swam = 1;
+	else
+		updateDelayS__swam = 10;
+	end
+
+	if (val__walked < 5000) then
+		updateDelayS__walked = 0.1;
+	elseif (val__walked < 10000) then
+		updateDelayS__walked = 1;
+	else
+		updateDelayS__walked = 10;
+	end
+
+	if (val__groundmount < 5000) then
+		updateDelayS__groundmount = 0.1;
+	elseif (val__groundmount < 10000) then
+		updateDelayS__groundmount = 1;
+	else
+		updateDelayS__groundmount = 10;
+	end
+
+	if (val__flight < 5000) then
+		updateDelayS__flight = 0.1;
+	elseif (val__flight < 10000) then
+		updateDelayS__flight = 1;
+	else
+		updateDelayS__flight = 10;
+	end
+
+	if (val__taxi < 5000) then
+		updateDelayS__taxi = 0.1;
+	elseif (val__taxi < 10000) then
+		updateDelayS__taxi = 1;
+	else
+		updateDelayS__taxi = 10;
+	end
+
+	if (val__ghost < 5000) then
+		updateDelayS__ghost = 0.1;
+	elseif (val__ghost < 10000) then
+		updateDelayS__ghost = 1;
+	else
+		updateDelayS__ghost = 10;
+	end
+	
+	if (timer__all >= updateDelayS__all or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__all < 10000) then
+			fsDist:SetText("Distance travelled: " .. val__all .. "m");
 		else
-			fsDist:SetText("Distance travelled: " .. Round(val/1000) .. "km");
+			fsDist:SetText("Distance travelled: " .. Round(val__all/1000) .. "km");
 		end
-		timer = 0;
+
+		timer__all = 0;
+	end
+
+	if (timer__swam >= updateDelayS__swam or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__swam < 10000) then
+			fsDist__swam:SetText("Distance swam: " .. val__swam .. "m");
+		else
+			fsDist__swam:SetText("Distance swam: " .. Round(val__swam/1000) .. "km");
+		end
+
+		timer__swam = 0;
+	end
+
+	if (timer__walked >= updateDelayS__walked or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__walked < 10000) then
+			fsDist__walked:SetText("Distance by foot: " .. val__walked .. "m");
+		else
+			fsDist__walked:SetText("Distance by foot: " .. Round(val__walked/1000) .. "km");
+		end
+
+		timer__walked = 0;
+	end
+
+	if (timer__groundmount >= updateDelayS__groundmount or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__groundmount < 10000) then
+			fsDist__groundmount:SetText("Distance rode: " .. val__groundmount .. "m");
+		else
+			fsDist__groundmount:SetText("Distance rode: " .. Round(val__groundmount/1000) .. "km");
+		end
+
+		timer__groundmount = 0;
+	end
+
+	if (timer__flight >= updateDelayS__flight or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__flight < 10000) then
+			fsDist__flight:SetText("Distance flew: " .. val__flight .. "m");
+		else
+			fsDist__flight:SetText("Distance flew: " .. Round(val__flight/1000) .. "km");
+		end
+
+		timer__flight = 0;
+	end
+
+	if (timer__taxi >= updateDelayS__taxi or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__taxi < 10000) then
+			fsDist__taxi:SetText("Distance on taxi: " .. val__taxi .. "m");
+		else
+			fsDist__taxi:SetText("Distance on taxi: " .. Round(val__taxi/1000) .. "km");
+		end
+
+		timer__taxi = 0;
+	end
+
+	if (timer__ghost >= updateDelayS__ghost or forceTextUpdate) then --> Update UI text every deltaTime seconds
+		if (val__ghost < 10000) then
+			fsDist__ghost:SetText("Distance haunted: " .. val__ghost .. "m");
+		else
+			fsDist__ghost:SetText("Distance haunted: " .. Round(val__ghost/1000) .. "km");
+		end
+
+		timer__ghost = 0;
 	end
 end
 
@@ -405,6 +588,48 @@ Trackster.OffsetDistance = function(offset)
 	if(offset == nil) then return Trackster_distanceTravelledOffset; end;
 	
 	Trackster_distanceTravelledOffset = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__swam = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__swam; end;
+	
+	Trackster_distanceTravelledOffset__swam = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__walked = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__walked; end;
+	
+	Trackster_distanceTravelledOffset__walked = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__groundmount = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__groundmount; end;
+	
+	Trackster_distanceTravelledOffset__groundmount = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__flight = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__flight; end;
+	
+	Trackster_distanceTravelledOffset__flight = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__taxi = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__taxi; end;
+	
+	Trackster_distanceTravelledOffset__taxi = offset;
+	UpdateDistanceTravelled(0,0,true);
+end
+
+Trackster.OffsetDistance__ghost = function(offset)
+	if(offset == nil) then return Trackster_distanceTravelledOffset__ghost; end;
+	
+	Trackster_distanceTravelledOffset__ghost = offset;
 	UpdateDistanceTravelled(0,0,true);
 end
 

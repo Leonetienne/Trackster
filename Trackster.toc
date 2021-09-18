@@ -5,7 +5,7 @@
 ## Version: 1.2
 
 #  Stats stated here are saved per character.
-## SavedVariablesPerCharacter: Trackster_jumpCounter, Trackster_critCounter, Trackster_castCounter, Trackster_loginCounter, Trackster_bossCounter, Trackster_chatCounter, Trackster_itemCounter, Trackster_goldCounter, Trackster_distanceTravelledCounter
+## SavedVariablesPerCharacter: Trackster_jumpCounter, Trackster_critCounter, Trackster_castCounter, Trackster_loginCounter, Trackster_bossCounter, Trackster_chatCounter, Trackster_itemCounter, Trackster_goldCounter, Trackster_distanceTravelledCounter, Trackster_distanceTravelledCounter__swam, Trackster_distanceTravelledCounter__walked, Trackster_distanceTravelledCounter__groundmount, Trackster_distanceTravelledCounter__flight, Trackster_distanceTravelledCounter__taxi, Trackster_distanceTravelledCounter__ghost
 
 
 # Stats stated here are saved for the whole wow client.
@@ -13,7 +13,7 @@
 
 
 #  These are the settings values.
-## SavedVariablesPerCharacter: Trackster_deathOffset, Trackster_killsOffset, Trackster_questsOffset, Trackster_dmgOffset, Trackster_jumpOffset, Trackster_IlvlOffset, Trackster_castOffset, Trackster_critOffset, Trackster_loginOffset, Trackster_bossOffset, Trackster_chatOffset, Trackster_itemOffset, Trackster_timeOffset, Trackster_goldOffset, Trackster_distanceTravelledOffset, Trackster_timestampRunBegin, Trackster_HearthstonesOffset
+## SavedVariablesPerCharacter: Trackster_deathOffset, Trackster_killsOffset, Trackster_questsOffset, Trackster_dmgOffset, Trackster_jumpOffset, Trackster_IlvlOffset, Trackster_castOffset, Trackster_critOffset, Trackster_loginOffset, Trackster_bossOffset, Trackster_chatOffset, Trackster_itemOffset, Trackster_timeOffset, Trackster_goldOffset, Trackster_distanceTravelledOffset, Trackster_timestampRunBegin, Trackster_HearthstonesOffset, Trackster_distanceTravelledOffset__swam, Trackster_distanceTravelledOffset__walked, Trackster_distanceTravelledOffset__groundmount, Trackster_distanceTravelledOffset__flight, Trackster_distanceTravelledOffset__taxi, Trackster_distanceTravelledOffset__ghost
 
 #  These are internal values. Just don't touch those.
 ## SavedVariablesPerCharacter: Trackster_showMainframe, Trackster_frameScale
