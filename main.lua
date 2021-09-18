@@ -379,6 +379,9 @@ hooksecurefunc( "JumpOrAscendStart", function()
 	Trackster_jumpCounter = Trackster_jumpCounter + 1;
 	UpdateJump();
   end
+  
+  -- Just to keep it up-to-date. The event gets fired too early...
+  UpdatePlvl();
 end );
 
 Trackster.OffsetDistance = function(offset)
