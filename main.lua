@@ -56,6 +56,8 @@ local textMarginB = 20; --> margin between
 local textMarginT = 25; --> margin top
 local textMarginL = 25; --> margin left
 
+local textCol_value = "|cFFFFD044"; --> text color string vor values
+
 local fsDeaths = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_deathOffset = 0;
 
@@ -354,9 +356,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	
 	if (timer__all >= updateDelayS__all or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__all < 10000) then
-			fsDist:SetText("Distance travelled: " .. val__all .. "m");
+			fsDist:SetText("Distance travelled: " .. textCol_value .. val__all .. "m");
 		else
-			fsDist:SetText("Distance travelled: " .. Round(val__all/1000) .. "km");
+			fsDist:SetText("Distance travelled: " .. textCol_value .. Round(val__all/1000) .. "km");
 		end
 
 		timer__all = 0;
@@ -364,9 +366,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__swam >= updateDelayS__swam or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__swam < 10000) then
-			fsDist__swam:SetText("Distance swam: " .. val__swam .. "m");
+			fsDist__swam:SetText("Distance swam: " .. textCol_value .. val__swam .. "m");
 		else
-			fsDist__swam:SetText("Distance swam: " .. Round(val__swam/1000) .. "km");
+			fsDist__swam:SetText("Distance swam: " .. textCol_value .. Round(val__swam/1000) .. "km");
 		end
 
 		timer__swam = 0;
@@ -374,9 +376,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__walked >= updateDelayS__walked or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__walked < 10000) then
-			fsDist__walked:SetText("Distance by foot: " .. val__walked .. "m");
+			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. val__walked .. "m");
 		else
-			fsDist__walked:SetText("Distance by foot: " .. Round(val__walked/1000) .. "km");
+			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. Round(val__walked/1000) .. "km");
 		end
 
 		timer__walked = 0;
@@ -384,9 +386,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__groundmount >= updateDelayS__groundmount or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__groundmount < 10000) then
-			fsDist__groundmount:SetText("Distance rode: " .. val__groundmount .. "m");
+			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. val__groundmount .. "m");
 		else
-			fsDist__groundmount:SetText("Distance rode: " .. Round(val__groundmount/1000) .. "km");
+			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. Round(val__groundmount/1000) .. "km");
 		end
 
 		timer__groundmount = 0;
@@ -394,9 +396,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__flight >= updateDelayS__flight or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__flight < 10000) then
-			fsDist__flight:SetText("Distance flew: " .. val__flight .. "m");
+			fsDist__flight:SetText("Distance flown: " .. textCol_value .. val__flight .. "m");
 		else
-			fsDist__flight:SetText("Distance flew: " .. Round(val__flight/1000) .. "km");
+			fsDist__flight:SetText("Distance flown: " .. textCol_value .. Round(val__flight/1000) .. "km");
 		end
 
 		timer__flight = 0;
@@ -404,9 +406,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__taxi >= updateDelayS__taxi or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__taxi < 10000) then
-			fsDist__taxi:SetText("Distance on taxi: " .. val__taxi .. "m");
+			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. val__taxi .. "m");
 		else
-			fsDist__taxi:SetText("Distance on taxi: " .. Round(val__taxi/1000) .. "km");
+			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. Round(val__taxi/1000) .. "km");
 		end
 
 		timer__taxi = 0;
@@ -414,9 +416,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__ghost >= updateDelayS__ghost or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__ghost < 10000) then
-			fsDist__ghost:SetText("Distance haunted: " .. val__ghost .. "m");
+			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. val__ghost .. "m");
 		else
-			fsDist__ghost:SetText("Distance haunted: " .. Round(val__ghost/1000) .. "km");
+			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. Round(val__ghost/1000) .. "km");
 		end
 
 		timer__ghost = 0;
@@ -424,7 +426,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 end
 
 function UpdatePlvl()
-	fsPlvl:SetText("Character level: " .. UnitLevel("PLAYER"));
+	fsPlvl:SetText("Character level: " .. textCol_value .. UnitLevel("PLAYER"));
 end
 
 function UpdateDeaths()
@@ -433,9 +435,9 @@ function UpdateDeaths()
 	local val = select(1, GetStatistic(60));
 	
 	if (val == "--") then
-		fsDeaths:SetText("Death count: " .. (Trackster_deathOffset));
+		fsDeaths:SetText("Death count: " .. textCol_value .. (Trackster_deathOffset));
 	else
-		fsDeaths:SetText("Death count: " .. (val + Trackster_deathOffset));
+		fsDeaths:SetText("Death count: " .. textCol_value .. (val + Trackster_deathOffset));
 	end
 end
 
@@ -445,9 +447,9 @@ local function UpdateKills()
 	local val = select(1, GetStatistic(1197));
 	
 	if (val == "--") then
-		fsKills:SetText("Kill count: " .. (Trackster_killsOffset));
+		fsKills:SetText("Kill count: " .. textCol_value .. (Trackster_killsOffset));
 	else
-		fsKills:SetText("Kill count: " .. (val + Trackster_killsOffset));
+		fsKills:SetText("Kill count: " .. textCol_value .. (val + Trackster_killsOffset));
 	end
 end	
 
@@ -457,9 +459,9 @@ local function UpdateQuests()
 	local val = select(1, GetStatistic(98));
 	
 	if (val == "--") then
-		fsQuests:SetText("Quest count: " .. (Trackster_questsOffset));
+		fsQuests:SetText("Quest count: " .. textCol_value .. (Trackster_questsOffset));
 	else
-		fsQuests:SetText("Quest count: " .. (val + Trackster_questsOffset));
+		fsQuests:SetText("Quest count: " .. textCol_value .. (val + Trackster_questsOffset));
 	end
 end
 
@@ -469,9 +471,9 @@ local function UpdateHearthstones()
 	local val = select(1, GetStatistic(353));
 	
 	if (val == "--") then
-		fsHearthstones:SetText("Hearthed: " .. (Trackster_HearthstonesOffset) .. " times");
+		fsHearthstones:SetText("Hearthed: " .. textCol_value .. (Trackster_HearthstonesOffset) .. " times");
 	else
-		fsHearthstones:SetText("Hearthed: " .. (val + Trackster_HearthstonesOffset) .. " times");
+		fsHearthstones:SetText("Hearthed: " .. textCol_value .. (val + Trackster_HearthstonesOffset) .. " times");
 	end
 end	
 
@@ -499,7 +501,7 @@ end
 
 local function UpdateJump()
 	Trackster_jumpOffset = round(Trackster_jumpOffset);
-	fsJump:SetText("Jump count: " .. (Trackster_jumpCounter + Trackster_jumpOffset));
+	fsJump:SetText("Jump count: " .. textCol_value .. (Trackster_jumpCounter + Trackster_jumpOffset));
 
 end
 
@@ -515,25 +517,25 @@ local function UpdateCasts()
 	elseif(val >= 100000) then val = tostring(round(val / 1000), 0) .. "K"; 
 	end
 	
-	fsCasts:SetText("Cast count: " .. val);
+	fsCasts:SetText("Cast count: " .. textCol_value .. val);
 
 end
 
 local function UpdateCrits()
 	Trackster_critOffset = round(Trackster_critOffset);
-	fsCrits:SetText("Crit count: " .. (Trackster_critCounter + Trackster_critOffset));
+	fsCrits:SetText("Crit count: " .. textCol_value .. (Trackster_critCounter + Trackster_critOffset));
 
 end
 
 local function UpdateLogins()
 	Trackster_loginOffset = round(Trackster_loginOffset);
-	fsLogins:SetText("Login count: " .. (Trackster_loginCounter + Trackster_loginOffset));
+	fsLogins:SetText("Login count: " .. textCol_value .. (Trackster_loginCounter + Trackster_loginOffset));
 
 end
 
 local function UpdateBoss()
 	Trackster_bossOffset = round(Trackster_bossOffset);
-	fsBoss:SetText("Boss count: " .. (Trackster_bossCounter + Trackster_bossOffset));
+	fsBoss:SetText("Boss count: " .. textCol_value .. (Trackster_bossCounter + Trackster_bossOffset));
 
 end
 
@@ -543,23 +545,23 @@ local function UpdateIlvl()
 	local val = math.floor(equipped + Trackster_IlvlOffset);
 	
 	
-	fsIlvl:SetText("ItemLvl: " .. val);
+	fsIlvl:SetText("ItemLvl: " .. textCol_value .. val);
 end
 
 local function UpdateGold()
 	--local val = select(1, GetStatistic(328));
 	local val = GetCoinTextureString(Trackster_goldCounter + Trackster_goldOffset);
-	fsGold:SetText("Gold total: " .. val);
+	fsGold:SetText("Gold total: " .. textCol_value .. val);
 end
 
 local function UpdateChat()
 	Trackster_chatOffset = round(Trackster_chatOffset);
-	fsChat:SetText("Chat msgs sent: " .. (Trackster_chatCounter + Trackster_chatOffset));
+	fsChat:SetText("Chat msgs sent: " .. textCol_value .. (Trackster_chatCounter + Trackster_chatOffset));
 end
 
 local function UpdateItem()
 	Trackster_itemOffset = round(Trackster_itemOffset);
-	fsItem:SetText("Items collected: " .. (Trackster_itemCounter + Trackster_itemOffset));
+	fsItem:SetText("Items collected: " .. textCol_value .. (Trackster_itemCounter + Trackster_itemOffset));
 end
 
 local function UpdateTime()
@@ -567,10 +569,10 @@ local function UpdateTime()
 	
 	local d, h, m, s = select(1, FormatTime(lastConfirmedTime + internalTimeOffset + Trackster_timeOffset));
 	
-	fsTime:SetText("Time played: " .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	fsTime:SetText("Time played: " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
 	
 	local d, h, m, s = select(1, FormatTime(time() - Trackster_timestampRunBegin));
-	fsAbsTime:SetText("Time (real): " .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	fsAbsTime:SetText("Time (real): " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
 end
 
 
