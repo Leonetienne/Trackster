@@ -578,7 +578,7 @@ local function UpdateTime()
 	fsTime:SetText("Time played: " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
 	
 	local d, h, m, s = select(1, FormatTime(time() - Trackster_timestampRunBegin));
-	fsAbsTime:SetText("Time (real): " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	fsAbsTime:SetText("Time real: " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
 end
 
 
