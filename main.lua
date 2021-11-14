@@ -102,6 +102,8 @@ Trackster_IlvlOffset = 0;
 local fsGold = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_goldOffset = 0;
 
+local fsGoldCurrent = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
+
 local fsCasts = mainFrame:CreateFontString(nil, "OVERLAY", textFont);
 Trackster_castOffset = 0;
 
@@ -165,14 +167,15 @@ fsPlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
 fsIlvl:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (13 * textMarginB)));
 --fsDmg:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (5 * textMarginB)));
 fsGold:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (14 * textMarginB)));
-fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (15 * textMarginB)));
-fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (16 * textMarginB)));
-fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (17 * textMarginB)));
-fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (18 * textMarginB)));
+fsGoldCurrent:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (15 * textMarginB)));
+fsBoss:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (16 * textMarginB)));
+fsCasts:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (17 * textMarginB)));
+fsCrits:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (18 * textMarginB)));
+fsLogins:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (19 * textMarginB)));
 --fsItem:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (12 * textMarginB)));
-fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (19 * textMarginB)));
-fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (20 * textMarginB)));
-fsHearthstones:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (21 * textMarginB)));
+fsChat:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (20 * textMarginB)));
+fsJump:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (21 * textMarginB)));
+fsHearthstones:SetPoint("TOPLEFT", textMarginL, -(textMarginT + (22 * textMarginB)));
 
 mainFrame:SetWidth(220 + textMarginL);
 mainFrame:SetHeight((textMarginT * 2) + (textMarginB *  22));
@@ -550,8 +553,11 @@ end
 
 local function UpdateGold()
 	--local val = select(1, GetStatistic(328));
-	local val = GetCoinTextureString(Trackster_goldCounter + Trackster_goldOffset);
-	fsGold:SetText("Gold total: " .. textCol_value .. val);
+	local valTotal = GetCoinTextureString(Trackster_goldCounter + Trackster_goldOffset);
+	fsGold:SetText("Gold total: " .. textCol_value .. valTotal);
+	
+	local valCurrent = GetCoinTextureString(GetMoney());
+	fsGoldCurrent:SetText("Gold current: " .. textCol_value .. valCurrent);
 end
 
 local function UpdateChat()
