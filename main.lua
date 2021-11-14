@@ -269,7 +269,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		Trackster_distanceTravelledCounter__groundmount = Trackster_distanceTravelledCounter__groundmount + deltaDistance;
 	elseif (UnitIsDeadOrGhost("PLAYER")) then
 		Trackster_distanceTravelledCounter__ghost = Trackster_distanceTravelledCounter__ghost + deltaDistance;
-	else
+	elseif (UnitInVehicle("PLAYER") == false) then
 		Trackster_distanceTravelledCounter__walked = Trackster_distanceTravelledCounter__walked + deltaDistance;
 	end
 
