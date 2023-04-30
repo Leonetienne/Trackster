@@ -3,7 +3,7 @@
 	if you feel personally insulted, feel free to contact /2
 ]]
 
-local mainFrame = CreateFrame("frame", "TracksterMainFrame", self, BackdropTemplateMixin and "BackdropTemplate");
+local mainFrame = CreateFrame("frame", "TracksterMainFrame", nil, BackdropTemplateMixin and "BackdropTemplate");
 Trackster = {};
 
 Trackster_jumpCounter = 0;
@@ -14,6 +14,7 @@ Trackster_bossCounter = 0;
 Trackster_chatCounter = 0;
 Trackster_itemCounter = 0;
 Trackster_goldCounter = 0;
+Trackster_questCounter = 0;
 Trackster_distanceTravelledCounter = 0;
 Trackster_distanceTravelledCounter__swam = 0;
 Trackster_distanceTravelledCounter__walked = 0;
@@ -458,14 +459,7 @@ end
 
 local function UpdateQuests()
 	Trackster_questsOffset = round(Trackster_questsOffset);
-
-	local val = select(1, GetStatistic(98));
-	
-	if (val == "--") then
-		fsQuests:SetText("Quest count: " .. textCol_value .. (Trackster_questsOffset));
-	else
-		fsQuests:SetText("Quest count: " .. textCol_value .. (val + Trackster_questsOffset));
-	end
+	fsQuests:SetText("Quest count: " .. textCol_value .. (Trackster_questCounter + Trackster_questsOffset));
 end
 
 local function UpdateHearthstones()
@@ -574,11 +568,12 @@ local function UpdateTime()
 	Trackster_timeOffset = round(Trackster_timeOffset);
 	
 	local d, h, m, s = select(1, FormatTime(lastConfirmedTime + internalTimeOffset + Trackster_timeOffset));
+	local totalHours = math.floor((lastConfirmedTime + internalTimeOffset + Trackster_timeOffset) / 3600);
 	
-	fsTime:SetText("Time played: " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	fsTime:SetText("Time played: " .. textCol_value .. d .. "d, " .. h .. ":" .. m .. ":" .. s .. " (" .. totalHours .. "h)");
 	
 	local d, h, m, s = select(1, FormatTime(time() - Trackster_timestampRunBegin));
-	fsAbsTime:SetText("Time real: " .. textCol_value .. d .. " days, " .. h .. ":" .. m .. ":" .. s);
+	fsAbsTime:SetText("Time real: " .. textCol_value .. d .. "d, " .. h .. ":" .. m .. ":" .. s);
 end
 
 
@@ -761,8 +756,7 @@ end
 mainFrame:SetScript("OnShow", UpdateAll);
 
 local function ProcessChatMsg(...)
-	
-	author = select(2, ...);
+	author = select(2, ...)
 	
 	if(author == GetUnitName("player") .. "-" .. GetRealmName()) then
 		Trackster_chatCounter = Trackster_chatCounter + 1;
@@ -806,8 +800,9 @@ local GetGoldDifference = function()
 	return tmp;
 end
 
+local timeLastQuestCompleted = time() --> This event may fire multiple times per quest turnin -.- so we'll just add a cooldown to it...
 local function eventHandler(self, event, ...)
-		
+
 	if (event == "PLAYER_ENTERING_WORLD") then
 		UpdateAll();
 		RequestTimePlayed();
@@ -851,7 +846,19 @@ local function eventHandler(self, event, ...)
 		--UpdateDmg();
 		
 	elseif (event == "QUEST_TURNED_IN") then
-		UpdateQuests();
+		--> This event may fire multiple times per quest turnin -.- so we'll just add a cooldown to it...
+		local timeNow = time();
+		if (timeNow - timeLastQuestCompleted > 3) then
+			print("Quest turned in, fired, and counted!");
+			Trackster_questCounter = Trackster_questCounter + 1;
+			UpdateQuests();
+		else
+			print("Quest turned in, fired, but it was ignored as a duplicate!");
+		end
+		timeLastQuestCompleted = timeNow;
+		
+		echo()
+
 		
 	elseif (event == "PLAYER_EQUIPMENT_CHANGED") then
 		UpdateIlvl();
