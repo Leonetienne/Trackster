@@ -246,10 +246,6 @@ local function FormatTime(t)
 	return select(1, d, h, m, s);
 end
 
-function Round(f)
-	return math.floor(f+0.5);
-end
-
 local timer__all = 0;
 local timer__swam = 0;
 local timer__walked = 0;
@@ -278,13 +274,13 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	end
 
 
-	local val__all = Round(Trackster_distanceTravelledCounter + Trackster_distanceTravelledOffset);
-	local val__swam = Round(Trackster_distanceTravelledCounter__swam + Trackster_distanceTravelledOffset__swam);
-	local val__walked = Round(Trackster_distanceTravelledCounter__walked + Trackster_distanceTravelledOffset__walked);
-	local val__groundmount = Round(Trackster_distanceTravelledCounter__groundmount + Trackster_distanceTravelledOffset__groundmount);
-	local val__flight = Round(Trackster_distanceTravelledCounter__flight + Trackster_distanceTravelledOffset__flight);
-	local val__taxi = Round(Trackster_distanceTravelledCounter__taxi + Trackster_distanceTravelledOffset__taxi);
-	local val__ghost = Round(Trackster_distanceTravelledCounter__ghost + Trackster_distanceTravelledOffset__ghost);
+	local val__all = round(Trackster_distanceTravelledCounter + Trackster_distanceTravelledOffset);
+	local val__swam = round(Trackster_distanceTravelledCounter__swam + Trackster_distanceTravelledOffset__swam);
+	local val__walked = round(Trackster_distanceTravelledCounter__walked + Trackster_distanceTravelledOffset__walked);
+	local val__groundmount = round(Trackster_distanceTravelledCounter__groundmount + Trackster_distanceTravelledOffset__groundmount);
+	local val__flight = round(Trackster_distanceTravelledCounter__flight + Trackster_distanceTravelledOffset__flight);
+	local val__taxi = round(Trackster_distanceTravelledCounter__taxi + Trackster_distanceTravelledOffset__taxi);
+	local val__ghost = round(Trackster_distanceTravelledCounter__ghost + Trackster_distanceTravelledOffset__ghost);
 				
 	timer__all 			= timer__all + deltaTime;
 	timer__swam 		= timer__swam + deltaTime;
@@ -362,7 +358,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__all < 10000) then
 			fsDist:SetText("Distance travelled: " .. textCol_value .. val__all .. "m");
 		else
-			fsDist:SetText("Distance travelled: " .. textCol_value .. Round(val__all/1000) .. "km");
+			fsDist:SetText("Distance travelled: " .. textCol_value .. round(val__all/1000) .. "km");
 		end
 
 		timer__all = 0;
@@ -372,7 +368,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__swam < 10000) then
 			fsDist__swam:SetText("Distance swam: " .. textCol_value .. val__swam .. "m");
 		else
-			fsDist__swam:SetText("Distance swam: " .. textCol_value .. Round(val__swam/1000) .. "km");
+			fsDist__swam:SetText("Distance swam: " .. textCol_value .. round(val__swam/1000) .. "km");
 		end
 
 		timer__swam = 0;
@@ -382,7 +378,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__walked < 10000) then
 			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. val__walked .. "m");
 		else
-			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. Round(val__walked/1000) .. "km");
+			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. round(val__walked/1000) .. "km");
 		end
 
 		timer__walked = 0;
@@ -392,7 +388,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__groundmount < 10000) then
 			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. val__groundmount .. "m");
 		else
-			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. Round(val__groundmount/1000) .. "km");
+			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. round(val__groundmount/1000) .. "km");
 		end
 
 		timer__groundmount = 0;
@@ -402,7 +398,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__flight < 10000) then
 			fsDist__flight:SetText("Distance flown: " .. textCol_value .. val__flight .. "m");
 		else
-			fsDist__flight:SetText("Distance flown: " .. textCol_value .. Round(val__flight/1000) .. "km");
+			fsDist__flight:SetText("Distance flown: " .. textCol_value .. round(val__flight/1000) .. "km");
 		end
 
 		timer__flight = 0;
@@ -412,7 +408,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__taxi < 10000) then
 			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. val__taxi .. "m");
 		else
-			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. Round(val__taxi/1000) .. "km");
+			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. round(val__taxi/1000) .. "km");
 		end
 
 		timer__taxi = 0;
@@ -422,7 +418,7 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 		if (val__ghost < 10000) then
 			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. val__ghost .. "m");
 		else
-			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. Round(val__ghost/1000) .. "km");
+			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. round(val__ghost/1000) .. "km");
 		end
 
 		timer__ghost = 0;
@@ -856,10 +852,7 @@ local function eventHandler(self, event, ...)
 			print("Quest turned in, fired, but it was ignored as a duplicate!");
 		end
 		timeLastQuestCompleted = timeNow;
-		
-		echo()
 
-		
 	elseif (event == "PLAYER_EQUIPMENT_CHANGED") then
 		UpdateIlvl();
 		
