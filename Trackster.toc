@@ -5,7 +5,7 @@
 ## Version: 1.2
 
 #  Stats stated here are saved per character.
-## SavedVariablesPerCharacter: Trackster_jumpCounter, Trackster_critCounter, Trackster_questCounter, Trackster_castCounter, Trackster_loginCounter, Trackster_bossCounter, Trackster_chatCounter, Trackster_itemCounter, Trackster_goldCounter, Trackster_distanceTravelledCounter, Trackster_distanceTravelledCounter__swam, Trackster_distanceTravelledCounter__walked, Trackster_distanceTravelledCounter__groundmount, Trackster_distanceTravelledCounter__flight, Trackster_distanceTravelledCounter__taxi, Trackster_distanceTravelledCounter__ghost
+## SavedVariablesPerCharacter: Trackster_jumpCounter, Trackster_critCounter, Trackster_questCounter, Trackster_killCounter, Trackster_castCounter, Trackster_loginCounter, Trackster_bossCounter, Trackster_chatCounter, Trackster_itemCounter, Trackster_goldCounter, Trackster_distanceTravelledCounter, Trackster_distanceTravelledCounter__swam, Trackster_distanceTravelledCounter__walked, Trackster_distanceTravelledCounter__groundmount, Trackster_distanceTravelledCounter__flight, Trackster_distanceTravelledCounter__taxi, Trackster_distanceTravelledCounter__ghost
 
 
 # Stats stated here are saved for the whole wow client.
@@ -18,5 +18,6 @@
 #  These are internal values. Just don't touch those.
 ## SavedVariablesPerCharacter: Trackster_showMainframe, Trackster_frameScale
 
+av-texts.lua
 main.lua
 options.lua

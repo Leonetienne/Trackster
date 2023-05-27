@@ -15,6 +15,7 @@ Trackster_chatCounter = 0;
 Trackster_itemCounter = 0;
 Trackster_goldCounter = 0;
 Trackster_questCounter = 0;
+Trackster_killCounter = 0;
 Trackster_distanceTravelledCounter = 0;
 Trackster_distanceTravelledCounter__swam = 0;
 Trackster_distanceTravelledCounter__walked = 0;
@@ -145,6 +146,130 @@ local function PrintMsg(s)
 	print("|cFFFFD044Trackster:|r " .. s);
 end
 
+--> Will play a sound and display a string on screen
+local function AnnounceMilestone(message)
+	--> Play a nice sound --> https://www.wowhead.com/sound=63971/ui-legendaryloot-toast
+	PlaySound(63971);
+	--> Announce the message on screen
+	UIErrorsFrame:AddMessage(message, 1.0, 1.0, 0.0, 1.0, UIERRORS_HOLD_TIME)
+	--> Announce in chat
+	PrintMsg(message);
+end
+
+--> Will call AnnounceMilestone automatically, each time value is a multiple of interval, or explicitly defined in avMessages
+--> Only use for integer, steady, individually incremented values!
+--> Meaning, they are integers, never decrease in value, and call this method for every single increment, and every increment must be by 1!
+local function AutoAnnounceMilestone_INT_STEADY_IINCR(value, kindkey, prettyName, interval)
+	if (value > 0) then
+		--> If a multiple of interval, or if we have a special message for that count
+		if (value % interval == 0) or (Trackster_avMessages[kindkey] and Trackster_avMessages[kindkey][value]) then
+		 
+			--> Fetch a special message if we have one, else come up with one
+			local message;
+			if Trackster_avMessages[kindkey] and Trackster_avMessages[kindkey][value] then
+				message = Trackster_avMessages[kindkey][value];
+			else
+				--> Little special case for time played
+				if (kindkey == "timePlayed") then
+					local totalHours = math.floor((lastConfirmedTime + internalTimeOffset + Trackster_timeOffset) / 3600);
+					message = "Congratulations! You have played for " .. totalHours .. " hours!";
+				else
+					message = "Congratulations! You have reached " .. value .. " " .. kindkey .. "!";
+				end
+			end
+		
+			AnnounceMilestone(message);
+		end
+	end
+end
+
+--> Will call AnnounceMilestone automatically, each time value is close to a multiple of interval, or explicitly defined in avMessages
+--> Only use for decimal, steady values!
+--> Meaning, they are decimal numbers and must never decrease in value!
+--> Y is the leeway to trigger. Let's say, if you set a trigger for 1,000,000, and have a Y of 2, it would still trigger for 1,000,002.
+local aamds_triggersUsed = {}
+local function AutoAnnounceMilestone_DEC_STEADY(value, kindkey, prettyName, interval, Y)
+	if (Y == nil) then Y = 1 end;
+	
+	local intval = math.floor(value);
+	
+	--> Special trigger points
+	if (Trackster_avMessages[kindkey]) then
+		--> Find closest trigger point
+		local closestKey = nil;
+		local minDifference = math.huge;
+		for key, _ in pairs(Trackster_avMessages[kindkey]) do
+			if key <= intval then
+				local difference = intval - key
+				if difference < minDifference then
+					minDifference = difference
+					closestKey = key
+				end
+			end
+		end
+
+		--> If we have found a closest key (may be 0 because were only looking at <= value keys
+		if (closestKey) then
+			--> If value is near closest defined trigger value AND trigger value is not blacklisted
+			local intsOverNearestTrigger = intval - closestKey;
+			if ((intsOverNearestTrigger <= Y) and (aamds_triggersUsed[kindkey][closestKey] == nil)) then
+				--> Announce the milestone
+				local message = Trackster_avMessages[kindkey][closestKey];
+				AnnounceMilestone(message);
+				
+				--> Blacklist this trigger value
+				if (aamds_triggersUsed[kindkey] == nil) then
+					aamds_triggersUsed[kindkey] = {};
+				end
+				aamds_triggersUsed[kindkey][closestKey] = true;
+				
+				return;
+			end
+		end
+	end
+
+	--> Procedural trigger points
+	local mod = intval % interval;
+    local intsOverNearestTrigger = intval % interval;
+	local nearestTrigger = intval - intsOverNearestTrigger;
+	
+	--> If value is near procedural trigger AND trigger value is not blacklisted
+	if ((intsOverNearestTrigger <= Y) and (aamds_triggersUsed[kindkey] == nil or aamds_triggersUsed[kindkey][nearestTrigger] == nil)) then
+		--> Announce the milestone
+		local message = "Congratulations! You have reached " .. value .. " " .. prettyName .. "!";
+		AnnounceMilestone(message);
+		
+		--> Blacklist this trigger value
+		if (aamds_triggersUsed[kindkey] == nil) then
+			aamds_triggersUsed[kindkey] = {};
+		end
+		aamds_triggersUsed[kindkey][nearestTrigger] = true;
+	end
+end
+
+local function CommafyNumber(number)
+  -- Convert the number to a string
+  local strNumber = tostring(number)
+  
+  -- Reverse the string
+  local reversedStr = string.reverse(strNumber)
+  
+  -- Add commas every three characters
+  local formattedStr = reversedStr:gsub("(%d%d%d)", "%1,")
+  
+  -- Reverse the formatted string back to its original order
+  local finalStr = string.reverse(formattedStr)
+  
+  -- Remove any leading comma if present
+  if string.sub(finalStr, 1, 1) == "," then
+    finalStr = string.sub(finalStr, 2)
+  end
+  
+  -- Return the formatted number
+  return finalStr
+end
+
+
 mainFrame:SetBackdrop({
       bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
       edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
@@ -255,7 +380,7 @@ local timer__taxi = 0;
 local timer__ghost = 0;
 function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	--> Update value in background in every frame
-	local deltaDistance = GetUnitSpeed("PLAYER") * 0.9144 * deltaTime;
+	local deltaDistance = GetUnitSpeed("PLAYER") * 0.9144 * deltaTime; --> Distance gets saved in meters, GetUnitSpeed returns yards per second
 	Trackster_distanceTravelledCounter = Trackster_distanceTravelledCounter + deltaDistance;
 
 	--> Increment specialized distance counters, if the state fits (like, swimming only if IsSwimming() == true)
@@ -281,6 +406,14 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	local val__flight = round(Trackster_distanceTravelledCounter__flight + Trackster_distanceTravelledOffset__flight);
 	local val__taxi = round(Trackster_distanceTravelledCounter__taxi + Trackster_distanceTravelledOffset__taxi);
 	local val__ghost = round(Trackster_distanceTravelledCounter__ghost + Trackster_distanceTravelledOffset__ghost);
+	
+	AutoAnnounceMilestone_DEC_STEADY(val__all, "distAll", "kilometers travelled", 1000*1000, 100); --> Each 1,000 km
+	AutoAnnounceMilestone_DEC_STEADY(val__swam, "distSwam", "kilometers swam", 50*1000, 100); --> Each 50 km
+	AutoAnnounceMilestone_DEC_STEADY(val__walked, "distWalked", "kilometers travelled by foot", 500*1000, 100); --> Each 500 km
+	AutoAnnounceMilestone_DEC_STEADY(val__groundmount, "distGroundmount", "kilometers rode (on ground)", 1000*1000, 100); --> Each 1,000 km
+	AutoAnnounceMilestone_DEC_STEADY(val__flight, "distFlight", "kilometers flown", 1000*000, 100); --> Each 1,000 km
+	AutoAnnounceMilestone_DEC_STEADY(val__taxi, "distTaxi", "kilometers rode (on taxi)", 500*000, 100); --> Each 500 km
+	AutoAnnounceMilestone_DEC_STEADY(val__ghost, "distGhost", "kilometers haunted", 10*000, 100); --> Each 10 km
 				
 	timer__all 			= timer__all + deltaTime;
 	timer__swam 		= timer__swam + deltaTime;
@@ -356,9 +489,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 	
 	if (timer__all >= updateDelayS__all or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__all < 10000) then
-			fsDist:SetText("Distance travelled: " .. textCol_value .. val__all .. "m");
+			fsDist:SetText("Distance travelled: " .. textCol_value .. CommafyNumber(val__all) .. "m");
 		else
-			fsDist:SetText("Distance travelled: " .. textCol_value .. round(val__all/1000) .. "km");
+			fsDist:SetText("Distance travelled: " .. textCol_value .. CommafyNumber(round(val__all/1000)) .. "km");
 		end
 
 		timer__all = 0;
@@ -366,9 +499,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__swam >= updateDelayS__swam or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__swam < 10000) then
-			fsDist__swam:SetText("Distance swam: " .. textCol_value .. val__swam .. "m");
+			fsDist__swam:SetText("Distance swam: " .. textCol_value .. CommafyNumber(val__swam) .. "m");
 		else
-			fsDist__swam:SetText("Distance swam: " .. textCol_value .. round(val__swam/1000) .. "km");
+			fsDist__swam:SetText("Distance swam: " .. textCol_value .. CommafyNumber(round(val__swam/1000)) .. "km");
 		end
 
 		timer__swam = 0;
@@ -376,9 +509,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__walked >= updateDelayS__walked or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__walked < 10000) then
-			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. val__walked .. "m");
+			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. CommafyNumber(val__walked) .. "m");
 		else
-			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. round(val__walked/1000) .. "km");
+			fsDist__walked:SetText("Distance by foot: " .. textCol_value .. CommafyNumber(round(val__walked/1000)) .. "km");
 		end
 
 		timer__walked = 0;
@@ -386,9 +519,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__groundmount >= updateDelayS__groundmount or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__groundmount < 10000) then
-			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. val__groundmount .. "m");
+			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. CommafyNumber(val__groundmount) .. "m");
 		else
-			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. round(val__groundmount/1000) .. "km");
+			fsDist__groundmount:SetText("Distance rode: " .. textCol_value .. CommafyNumber(round(val__groundmount/1000)) .. "km");
 		end
 
 		timer__groundmount = 0;
@@ -396,9 +529,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__flight >= updateDelayS__flight or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__flight < 10000) then
-			fsDist__flight:SetText("Distance flown: " .. textCol_value .. val__flight .. "m");
+			fsDist__flight:SetText("Distance flown: " .. textCol_value .. CommafyNumber(val__flight) .. "m");
 		else
-			fsDist__flight:SetText("Distance flown: " .. textCol_value .. round(val__flight/1000) .. "km");
+			fsDist__flight:SetText("Distance flown: " .. textCol_value .. CommafyNumber(round(val__flight/1000)) .. "km");
 		end
 
 		timer__flight = 0;
@@ -406,9 +539,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__taxi >= updateDelayS__taxi or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__taxi < 10000) then
-			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. val__taxi .. "m");
+			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. CommafyNumber(val__taxi) .. "m");
 		else
-			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. round(val__taxi/1000) .. "km");
+			fsDist__taxi:SetText("Distance on taxi: " .. textCol_value .. CommafyNumber(round(val__taxi/1000)) .. "km");
 		end
 
 		timer__taxi = 0;
@@ -416,9 +549,9 @@ function UpdateDistanceTravelled(self, deltaTime, forceTextUpdate)
 
 	if (timer__ghost >= updateDelayS__ghost or forceTextUpdate) then --> Update UI text every deltaTime seconds
 		if (val__ghost < 10000) then
-			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. val__ghost .. "m");
+			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. CommafyNumber(val__ghost) .. "m");
 		else
-			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. round(val__ghost/1000) .. "km");
+			fsDist__ghost:SetText("Distance haunted: " .. textCol_value .. CommafyNumber(round(val__ghost/1000)) .. "km");
 		end
 
 		timer__ghost = 0;
@@ -435,27 +568,25 @@ function UpdateDeaths()
 	local val = select(1, GetStatistic(60));
 	
 	if (val == "--") then
-		fsDeaths:SetText("Death count: " .. textCol_value .. (Trackster_deathOffset));
+		fsDeaths:SetText("Death count: " .. textCol_value .. CommafyNumber(Trackster_deathOffset));
+		AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_deathOffset, "deaths", "deaths", 100);
 	else
-		fsDeaths:SetText("Death count: " .. textCol_value .. (val + Trackster_deathOffset));
+		fsDeaths:SetText("Death count: " .. textCol_value .. CommafyNumber(val + Trackster_deathOffset));
 	end
 end
 
 local function UpdateKills()
 	Trackster_killsOffset = round(Trackster_killsOffset);
-	
-	local val = select(1, GetStatistic(1197));
-	
-	if (val == "--") then
-		fsKills:SetText("Kill count: " .. textCol_value .. (Trackster_killsOffset));
-	else
-		fsKills:SetText("Kill count: " .. textCol_value .. (val + Trackster_killsOffset));
-	end
+		
+	fsKills:SetText("Kill count: " .. textCol_value .. CommafyNumber(Trackster_killCounter + Trackster_killsOffset));
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_deathOffset, "kills", "creatures slain", 1000);
 end	
 
 local function UpdateQuests()
 	Trackster_questsOffset = round(Trackster_questsOffset);
-	fsQuests:SetText("Quest count: " .. textCol_value .. (Trackster_questCounter + Trackster_questsOffset));
+	fsQuests:SetText("Quest count: " .. textCol_value .. CommafyNumber(Trackster_questCounter + Trackster_questsOffset));
+	
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_questCounter + Trackster_questsOffset, "quests", "quests completed", 100);
 end
 
 local function UpdateHearthstones()
@@ -494,8 +625,9 @@ end
 
 local function UpdateJump()
 	Trackster_jumpOffset = round(Trackster_jumpOffset);
-	fsJump:SetText("Jump count: " .. textCol_value .. (Trackster_jumpCounter + Trackster_jumpOffset));
-
+	fsJump:SetText("Jump count: " .. textCol_value .. CommafyNumber(Trackster_jumpCounter + Trackster_jumpOffset));
+	
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_jumpCounter + Trackster_jumpOffset, "jumps", "times jumped", 10000);
 end
 
 local function UpdateCasts()
@@ -510,26 +642,29 @@ local function UpdateCasts()
 	elseif(val >= 100000) then val = tostring(round(val / 1000), 0) .. "K"; 
 	end
 	
-	fsCasts:SetText("Cast count: " .. textCol_value .. val);
+	fsCasts:SetText("Cast count: " .. textCol_value .. CommafyNumber(val));
 
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_castCounter + Trackster_castOffset, "casts" , "spells casted", 10000);
 end
 
 local function UpdateCrits()
 	Trackster_critOffset = round(Trackster_critOffset);
-	fsCrits:SetText("Crit count: " .. textCol_value .. (Trackster_critCounter + Trackster_critOffset));
+	fsCrits:SetText("Crit count: " .. textCol_value .. CommafyNumber(Trackster_critCounter + Trackster_critOffset));
 
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_critCounter + Trackster_critOffset, "crits", "critical hits", 10000);
 end
 
 local function UpdateLogins()
 	Trackster_loginOffset = round(Trackster_loginOffset);
-	fsLogins:SetText("Login count: " .. textCol_value .. (Trackster_loginCounter + Trackster_loginOffset));
+	fsLogins:SetText("Login/Reload count: " .. textCol_value .. CommafyNumber(Trackster_loginCounter + Trackster_loginOffset));
 
 end
 
 local function UpdateBoss()
 	Trackster_bossOffset = round(Trackster_bossOffset);
-	fsBoss:SetText("Boss count: " .. textCol_value .. (Trackster_bossCounter + Trackster_bossOffset));
+	fsBoss:SetText("Boss count: " .. textCol_value .. CommafyNumber(Trackster_bossCounter + Trackster_bossOffset));
 
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_bossCounter + Trackster_bossOffset, "bosses", "bosses slain", 100);
 end
 
 
@@ -552,7 +687,9 @@ end
 
 local function UpdateChat()
 	Trackster_chatOffset = round(Trackster_chatOffset);
-	fsChat:SetText("Chat msgs sent: " .. textCol_value .. (Trackster_chatCounter + Trackster_chatOffset));
+	fsChat:SetText("Chat msgs sent: " .. textCol_value .. CommafyNumber(Trackster_chatCounter + Trackster_chatOffset));
+	
+	AutoAnnounceMilestone_INT_STEADY_IINCR(Trackster_chatCounter + Trackster_chatOffset, "chatMessagesSent", "chat messages sent", 1000);
 end
 
 local function UpdateItem()
@@ -570,6 +707,8 @@ local function UpdateTime()
 	
 	local d, h, m, s = select(1, FormatTime(time() - Trackster_timestampRunBegin));
 	fsAbsTime:SetText("Time real: " .. textCol_value .. d .. "d, " .. h .. ":" .. m .. ":" .. s);
+	
+	AutoAnnounceMilestone_INT_STEADY_IINCR(lastConfirmedTime + internalTimeOffset + Trackster_timeOffset, "timePlayed", "time played", 3600*100);
 end
 
 
@@ -813,11 +952,15 @@ local function eventHandler(self, event, ...)
 		UpdateDeaths();
 		
 	elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
-		local type, fo, foo, source = select(2, CombatLogGetCurrentEventInfo());
+		local type, _, _, source, _, _, dest = select(2, CombatLogGetCurrentEventInfo());
 
 		if(source == GetUnitName("player")) then
 		
-			if (type == "UNIT_DIED") then UpdateKills();
+			if (type == "PARTY_KILL") then
+				Trackster_killCounter = Trackster_killCounter + 1;
+				PlaySoundFile("Interface\\AddOns\\Trackster\\hurt.wav", "MASTER");
+				print(type .. ', ' .. source .. ', ' .. dest);
+				UpdateKills();
 			
 			elseif (type == "SPELL_DAMAGE") then 
 				
@@ -844,7 +987,7 @@ local function eventHandler(self, event, ...)
 	elseif (event == "QUEST_TURNED_IN") then
 		--> This event may fire multiple times per quest turnin -.- so we'll just add a cooldown to it...
 		local timeNow = time();
-		if (timeNow - timeLastQuestCompleted > 3) then
+		if (timeNow - timeLastQuestCompleted > 1) then
 			print("Quest turned in, fired, and counted!");
 			Trackster_questCounter = Trackster_questCounter + 1;
 			UpdateQuests();
